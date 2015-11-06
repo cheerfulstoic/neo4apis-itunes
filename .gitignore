@@ -1,0 +1,4 @@
+*.jar
+
+cache
+nlp_cache
