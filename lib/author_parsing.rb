@@ -1,10 +1,12 @@
 require 'active_support/cache'
+require 'digest'
 
 CACHE = ActiveSupport::Cache::FileStore.new('nlp_cache')
 require 'json'
 
 def get_nlp_result(text)
-  CACHE.fetch(text) do
+  digest = Digest::SHA256.digest(text)
+  CACHE.fetch(digest) do
     File.open('input.txt', 'w') { |f| f << text }
     #command = 'java -cp "*" -Xmx2g edu.stanford.nlp.pipeline.StanfordCoreNLP -annotators tokenize,ssplit,pos,lemma,ner,parse,dcoref -file input.txt -outputFormat json'
     command = 'java -cp "*" -Xmx2g edu.stanford.nlp.pipeline.StanfordCoreNLP -annotators tokenize,ssplit,pos,lemma,ner -file input.txt -outputFormat json'
